@@ -27,6 +27,26 @@ button{
 .dtc-btn{
     bottom: -15px;
     left: 55px;
+    width: 60%;
+}
+.inc{
+  color: #cc3311;
+  border: 2px solid #cc3311;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+#addToCart2{
+    z-index: -1;
+    display: none;
+}
+.inc-1{
+    border: 1px solid #cc3311;
+    padding: 6px 0px;
 }
 .name-of-item{
     font-size: 16px;
@@ -60,13 +80,16 @@ button{
 #preall{
     display: block;
 }
+#addToCart2{
+    /* display: none !important; */
+}
 @media (max-width:991px) {
     .dtc-btn{
-        left: 90px;
+        left: 70px;
     }
 }
 @media (max-width:767px) {
-    .dtc-btn{
-        left: 120px;
-    }
+    /* .dtc-btn{
+        left: 70px;
+    } */
 }
