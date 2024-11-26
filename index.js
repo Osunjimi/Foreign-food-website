@@ -90,7 +90,7 @@ listOfProducts.forEach((element, index) => {
             <div class="description mt-4">
                 <p class="name-of-item">${element.productName}</p>
                 <p><b>${element.productDescription}</b></p>
-                <p class="price"><b>$${element.productPrice}</b></p>
+                <p class="price"><b>$${element.productPrice.toFixed(2)}</b></p>
             </div>
         </div>
     `;
@@ -123,6 +123,7 @@ const increment = (index) => {
        a = a < 10 ? "0" + a : a; 
        amount.innerText = a; 
        listOfProducts[index].productQuantity = a;
+       console.log("after increasing", listOfProducts[index].productQuantity);
 
        // Update the quantity in the cart
        updateCartQuantity(index, a);
@@ -134,27 +135,34 @@ const increment = (index) => {
        a = a < 10 ? "0" + a : a; 
        amount.innerText = a;
        listOfProducts[index].productQuantity = a;
+       console.log("after decreasing", listOfProducts[index].productQuantity);
+       
 
        // Update the quantity in the cart
-       updateCartQuantity(index, a);
+       updateCartQuantity(index, listOfProducts[index].productQuantity);
    });
 };
 
 const updateCartQuantity = (index, quantity) => {
-   const cartItem = cartProduct.find(product => product.productName === listOfProducts[index].productName);
-   if (cartItem) {
-       cartItem.productQuantity = quantity;
+  const cartItem = cartProduct.find(product => product.productName === listOfProducts[index].productName);
+  if (cartItem) {
+      cartItem.productQuantity = quantity;
+      cartItem.totalPrice = (cartItem.productPrice * quantity).toFixed(2);
 
-       // Update the DOM
-       const cartQuantity = document.querySelectorAll('#onOrder .ordered-number span')[cartProduct.indexOf(cartItem)];
-       if (cartQuantity) {
-           cartQuantity.textContent = quantity < 10 ? quantity : quantity;
-       }
+      // Update the DOM for quantity and price
+      const cartQuantity = document.querySelectorAll('#onOrder .ordered-number span')[cartProduct.indexOf(cartItem)];
+      const cartPrice = document.querySelectorAll('#onOrder .ordered-description b')[cartProduct.indexOf(cartItem)];
 
-       // Recalculate total price
-       totalProduct(cartProduct);
-   }
+      if (cartQuantity && cartPrice) {
+          cartQuantity.textContent = quantity < 10 ? quantity : quantity;
+          cartPrice.textContent = `$${cartItem.totalPrice}`;
+      }
+
+      // Recalculate total price for all products
+      totalProduct(cartProduct);
+  }
 };
+
 
 
 const cartProduct = []
@@ -163,75 +171,81 @@ console.log(cartProduct)
 
 //This my placeOrder adds a product to the cart and updates the UI
 const placeOrder = (index) => {
-   document.getElementById("all").style.display = "block";
-   document.getElementById("preall").style.display = "none";
- 
-   const selectedProduct = listOfProducts[index];
-   const existingProduct = cartProduct.find(product => product.productName === selectedProduct.productName);
- 
-   if (existingProduct) {
-       // Update quantity if already in the cart
-       existingProduct.productQuantity = selectedProduct.productQuantity;
-       updateCartQuantity(index, existingProduct.productQuantity);
-   } else {
-      // selectedProduct.productQuantity = listOfProducts[index].productQuantity;
-       cartProduct.push(selectedProduct);
-       let onOrder = document.getElementById('onOrder');
-       onOrder.innerHTML += `
-       <div class='d-flex justify-content-between align-items-center'>
+  document.getElementById("all").style.display = "block";
+  document.getElementById("preall").style.display = "none";
+
+  const selectedProduct = listOfProducts[index];
+  const existingProduct = cartProduct.find(product => product.productName === selectedProduct.productName);
+
+  if (existingProduct) {
+      // Update quantity if already in the cart
+      existingProduct.productQuantity = selectedProduct.productQuantity;
+      existingProduct.totalPrice = (selectedProduct.productPrice * selectedProduct.productQuantity).toFixed(2);
+      updateCartQuantity(index, existingProduct.productQuantity);
+  } else {
+      // Calculate and set total price
+      selectedProduct.totalPrice = (selectedProduct.productPrice * selectedProduct.productQuantity).toFixed(2);
+      cartProduct.push(selectedProduct);
+
+      let onOrder = document.getElementById('onOrder');
+      onOrder.innerHTML += `
+      <div class='d-flex justify-content-between align-items-center'>
           <div class="left">
-             <h6><b>${selectedProduct.productDescription}</b></h6>
-             <div class="ordered-description d-flex justify-content-between align-items-center gap-3">
-               <h6 class="m-0 p-0 ordered-number"><span id="theQuantity">${selectedProduct.productQuantity}</span>X</h6>
-               <p class="m-0 p-0">@<del>$${(selectedProduct.productPrice * 1.5)}</del></p>
-               <p class="m-0 p-0"><b>$${selectedProduct.productPrice}</b></p>
-             </div>
-           </div>
-           <div class="cancel">
-             <p class="fs-4 p-0 m-0 cancel-icon"><i class="fa-regular fa-circle-xmark"></i></p>
-           </div>
-       </div>
-       <hr>
-       `;
-   }
- 
-   document.getElementById('Item-num').innerHTML = cartProduct.length;
- 
-   // Save updated cart to localStorage
-   localStorage.setItem('cart items', JSON.stringify(cartProduct));
- 
-   // Recalculate total price
-   totalProduct(cartProduct);
- };
+              <h6><b>${selectedProduct.productDescription}</b></h6>
+              <div class="ordered-description d-flex justify-content-between align-items-center gap-3">
+                  <h6 class="m-0 p-0 ordered-number"><span id="theQuantity">${selectedProduct.productQuantity}</span>X</h6>
+                  <p class="m-0 p-0">@<del>$${(selectedProduct.productPrice * 1.5).toFixed(2)}</del></p>
+                  <p class="m-0 p-0"><b>$${selectedProduct.totalPrice}</b></p>
+              </div>
+          </div>
+          <div class="cancel">
+              <p class="fs-4 p-0 m-0 cancel-icon"><i class="fa-regular fa-circle-xmark"></i></p>
+          </div>
+      </div>
+      <hr>
+      `;
+  }
+
+  document.getElementById('item-num').innerHTML = cartProduct.length;
+  console.log(cartProduct.length);
+  
+
+  // Save updated cart to localStorage
+  localStorage.setItem('cart items', JSON.stringify(cartProduct));
+
+  // Recalculate total price
+  totalProduct(cartProduct);
+};
+
  
 
 // let arrayOfPrice = []
-const totalProduct = (arrayOfPrice) =>{
-   let totalPrice = 0;
-   arrayOfPrice.forEach(obj => {
-      // console.log(obj.productPrice);
-   
-      totalPrice += obj.productPrice
+const totalProduct = (arrayOfPrice) => {
+  let totalPrice = 0;
+  arrayOfPrice.forEach(product => {
+      totalPrice += parseFloat(product.totalPrice);
+  });
 
-      // console.log("This is the total ",totalPrice);
-      
-   });
-
-  let total = document.getElementById('Total')
+  let total = document.getElementById('Total');
   total.innerHTML = `
       <div class="left">
           <p class="p-0 m-0">Total</p>
-          </div>
-          <div class="cancel">
-            <h3>$${totalPrice}</h3>
-          </div>
-  `
-}
+      </div>
+      <div class="cancel">
+          <h3>$${totalPrice.toFixed(2)}</h3>
+      </div>
+  `;
+};
+
 
 let retrieve = () =>{
    let retrieve = JSON.parse(localStorage.getItem('cart items'))
    if (retrieve) {
       console.log(("item found in storage"),retrieve);
+      document.getElementById('item-num').innerHTML = retrieve.length;
+
+      let total = document.getElementById('Total');
+      let totalPrice = 0;
       
       document.getElementById("all").style.display="block";
       document.getElementById("preall").style.display="none";
@@ -244,7 +258,7 @@ let retrieve = () =>{
                   <div class="ordered-description d-flex justify-content-between align-items-center gap-3">
                     <h6 class="m-0 p-0 ordered-number">${element.productQuantity}X</h6>
                     <p class="m-0 p-0">@<del>$${(element.productPrice * 1.5)}</del></p>
-                    <p class="m-0 p-0"><b>$${element.productPrice}</b></p>
+                    <p class="m-0 p-0"><b>$${(element.productPrice * element.productQuantity).toFixed(2)}</b></p>
                   </div>
                 </div>
                 <div class="cancel">
@@ -253,6 +267,15 @@ let retrieve = () =>{
                 </div>
                 <hr>
           `
+          totalPrice += element.productPrice
+          total.innerHTML = `
+              <div class="left">
+                  <p class="p-0 m-0">Total</p>
+              </div>
+              <div class="cancel">
+                  <h3>$${totalPrice.toFixed(2)}</h3>
+              </div>
+          `;
           console.log(element.productPrice);
           
       });
