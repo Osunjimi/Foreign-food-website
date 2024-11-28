@@ -16,11 +16,6 @@ body{
 .img{
     width: 100%;
 }
-.img:hover{
-    /* transition: ease-in;
-    transition-duration: 1s;
-    scale: 1.1; */
-}
 button{
     border: 1px solid hsl(14, 86%, 42%) !important;
 }
@@ -80,9 +75,6 @@ button{
 }
 #preall{
     display: block;
-}
-#addToCart2{
-    /* display: none !important; */
 }
 @media (max-width:991px) {
     .dtc-btn{
