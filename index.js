@@ -1,5 +1,6 @@
 let listOfProducts = [
     {
+       productId: 0, 
        productImage: './assets/images/image-waffle-desktop.jpg' ,
        productName: 'Waffle',
        productDescription: 'Waffle with Berries',
@@ -7,27 +8,31 @@ let listOfProducts = [
        productQuantity: 1
     },
     {
+        productId: 1, 
         productImage: './assets/images/image-creme-brulee-desktop.jpg' ,
         productName: 'Crème Brûlée',
         productDescription: 'Vanilla Bean Crème Brûlée',
         productPrice: 7.00,
-       productQuantity: 1
+        productQuantity: 1
      },
      {
+        productId: 2, 
         productImage: './assets/images/image-macaron-tablet.jpg' ,
         productName: 'Macaron',
         productDescription: 'Macaron Mix of Five',
         productPrice: 8.00,
-       productQuantity: 1
+        productQuantity: 1
      },
      {
+        productId: 3, 
         productImage: './assets/images/image-tiramisu-desktop.jpg' ,
         productName: 'Tiramisu',
         productDescription: 'Classic Tiramisu',
         productPrice: 5.50,
-       productQuantity: 1
+        productQuantity: 1
      },
      {
+        productId: 4, 
         productImage: './assets/images/image-baklava-tablet.jpg' ,
         productName: 'Baklava',
         productDescription: 'Pistachio Baklava',
@@ -35,32 +40,36 @@ let listOfProducts = [
        productQuantity: 1
      },
      {
+        productId: 5, 
         productImage: './assets/images/image-meringue-desktop.jpg' ,
         productName: 'Pie',
         productDescription: 'Lemon Meringue Pie',
         productPrice: 5.00,
-       productQuantity: 1
+        productQuantity: 1
      },
      {
+        productId: 6, 
         productImage: './assets/images/image-cake-tablet.jpg' ,
-        productName: 'Pie',
-        productDescription: 'Lemon Meringue Pie',
-        productPrice: 5.00,
-       productQuantity: 1
+        productName: 'Cake',
+        productDescription: 'Red Velvet Cake',
+        productPrice: 4.50,
+        productQuantity: 1
      },
      {
+        productId: 7, 
         productImage: './assets/images/image-brownie-tablet.jpg' ,
-        productName: 'Pie',
-        productDescription: 'Lemon Meringue Pie',
-        productPrice: 5.00,
-       productQuantity: 1
+        productName: 'Brownie',
+        productDescription: 'Salted Caramel Brownie',
+        productPrice: 4.50,
+        productQuantity: 1
      },
      {
+        productId: 8, 
         productImage: './assets/images/image-panna-cotta-tablet.jpg' ,
-        productName: 'Pie',
-        productDescription: 'Lemon Meringue Pie',
-        productPrice: 5.00,
-       productQuantity: 1
+        productName: 'Panna Cotta',
+        productDescription: 'Vanilla Panna Cotta',
+        productPrice: 6.50,
+        productQuantity: 1
      }
 ]
 
@@ -70,7 +79,7 @@ listOfProducts.forEach((element, index) => {
         <div class="product col-lg-4 col-md-6 col-sm"> 
             <div class="product-image position-relative">
                 <div class="img">
-                    <img src="${element.productImage}" alt="" width="100%" class="rounded-3">
+                    <img src="${element.productImage}" alt="${element.productName}" width="100%" class="rounded-3">
                 </div>
                 <button 
                     type="button" 
@@ -111,58 +120,58 @@ const showAndHide = (index) => {
 };
 
 const increment = (index) => {
-   let a = listOfProducts[index].productQuantity; 
-   let minus = document.querySelectorAll('.minus')[index];
-   let plus = document.querySelectorAll('.plus')[index];
-   let amount = document.querySelectorAll('.amount')[index];
+    let a = listOfProducts[index].productQuantity; 
+    const minus = document.querySelectorAll('.minus')[index];
+    const plus = document.querySelectorAll('.plus')[index];
+    const amount = document.querySelectorAll('.amount')[index];
 
-   amount.innerText = a < 10 ? "0" + a : a;
+    amount.innerText = a < 10 ? "0" + a : a;
 
-   plus.addEventListener('click', () => {
-       a++;
-       a = a < 10 ? "0" + a : a; 
-       amount.innerText = a; 
-       listOfProducts[index].productQuantity = a;
-       console.log("after increasing", listOfProducts[index].productQuantity);
+    plus.addEventListener('click', () => {
+        a++;
+        listOfProducts[index].productQuantity = a; // Update the product's quantity
+        amount.innerText = a < 10 ? "0" + a : a; 
 
-       // Update the quantity in the cart
-       updateCartQuantity(index, a);
-   });
+        // Update the cart UI immediately
+        updateCartQuantity(index, a);
+    });
 
-   minus.addEventListener('click', () => {
-       a--;
-       if (a < 1) a = 1; 
-       a = a < 10 ? "0" + a : a; 
-       amount.innerText = a;
-       listOfProducts[index].productQuantity = a;
-       console.log("after decreasing", listOfProducts[index].productQuantity);
-       
+    minus.addEventListener('click', () => {
+        if (a > 1) {
+            a--;
+            listOfProducts[index].productQuantity = a; // Update the product's quantity
+            amount.innerText = a < 10 ? "0" + a : a; 
 
-       // Update the quantity in the cart
-       updateCartQuantity(index, listOfProducts[index].productQuantity);
-   });
+            // Update the cart UI immediately
+            updateCartQuantity(index, a);
+        }
+    });
 };
 
 const updateCartQuantity = (index, quantity) => {
-  const cartItem = cartProduct.find(product => product.productName === listOfProducts[index].productName);
-  if (cartItem) {
-      cartItem.productQuantity = quantity;
-      cartItem.totalPrice = (cartItem.productPrice * quantity).toFixed(2);
+    const cartItem = cartProduct.find(product => product.productName === listOfProducts[index].productName);
+    if (cartItem) {
+        cartItem.productQuantity = quantity;
+        cartItem.totalPrice = (cartItem.productPrice * quantity).toFixed(2);
 
-      // Update the DOM for quantity and price
-      const cartQuantity = document.querySelectorAll('#onOrder .ordered-number span')[cartProduct.indexOf(cartItem)];
-      const cartPrice = document.querySelectorAll('#onOrder .ordered-description b')[cartProduct.indexOf(cartItem)];
+        // Update the DOM for quantity and price
+        const cartQuantity = document.querySelectorAll('#onOrder .ordered-number span')[cartProduct.indexOf(cartItem)];
+        const cartPrice = document.querySelectorAll('#onOrder .ordered-description b')[cartProduct.indexOf(cartItem)];
 
-      if (cartQuantity && cartPrice) {
-          cartQuantity.textContent = quantity < 10 ? quantity : quantity;
-          cartPrice.textContent = `$${cartItem.totalPrice}`;
-      }
+        if (cartQuantity && cartPrice) {
+            cartQuantity.textContent = quantity < 10 ? "0" + quantity : quantity;
+            cartPrice.textContent = `$${cartItem.totalPrice}`;
+        }
 
-      // Recalculate total price for all products
-      totalProduct(cartProduct);
-  }
+        // Recalculate the total price for all products in the cart
+        totalProduct(cartProduct);
+        saveCartToLocalStorage()
+    }
 };
 
+const saveCartToLocalStorage = () => {
+    localStorage.setItem('cart items', JSON.stringify(cartProduct));
+};
 
 
 const cartProduct = []
@@ -171,55 +180,48 @@ console.log(cartProduct)
 
 //This my placeOrder adds a product to the cart and updates the UI
 const placeOrder = (index) => {
-  document.getElementById("all").style.display = "block";
-  document.getElementById("preall").style.display = "none";
+    document.getElementById("all").style.display = "block";
+    document.getElementById("preall").style.display = "none";
 
-  const selectedProduct = listOfProducts[index];
-  const existingProduct = cartProduct.find(product => product.productName === selectedProduct.productName);
+    const selectedProduct = { ...listOfProducts[index] }; // Clone product to avoid shared reference
+    const existingProduct = cartProduct.find(product => product.productName === selectedProduct.productName);
 
-  if (existingProduct) {
-      // Update quantity if already in the cart
-      existingProduct.productQuantity = selectedProduct.productQuantity;
-      existingProduct.totalPrice = (selectedProduct.productPrice * selectedProduct.productQuantity).toFixed(2);
-      updateCartQuantity(index, existingProduct.productQuantity);
-  } else {
-      // Calculate and set total price
-      selectedProduct.totalPrice = (selectedProduct.productPrice * selectedProduct.productQuantity).toFixed(2);
-      cartProduct.push(selectedProduct);
+    if (existingProduct) {
+        existingProduct.productQuantity = selectedProduct.productQuantity;
+        existingProduct.totalPrice = (selectedProduct.productPrice * selectedProduct.productQuantity).toFixed(2);
+        updateCartQuantity(index, existingProduct.productQuantity);
+    } else {
+        selectedProduct.totalPrice = (selectedProduct.productPrice * selectedProduct.productQuantity).toFixed(2);
+        cartProduct.push(selectedProduct);
 
-      let onOrder = document.getElementById('onOrder');
-      onOrder.innerHTML += `
-      <div class='d-flex justify-content-between align-items-center'>
-          <div class="left">
-              <h6><b>${selectedProduct.productDescription}</b></h6>
-              <div class="ordered-description d-flex justify-content-between align-items-center gap-3">
-                  <h6 class="m-0 p-0 ordered-number"><span id="theQuantity">${selectedProduct.productQuantity}</span>X</h6>
-                  <p class="m-0 p-0">@<del>$${(selectedProduct.productPrice * 1.5).toFixed(2)}</del></p>
-                  <p class="m-0 p-0"><b>$${selectedProduct.totalPrice}</b></p>
-              </div>
-          </div>
-          <div class="cancel">
-              <p class="fs-4 p-0 m-0 cancel-icon"><i class="fa-regular fa-circle-xmark"></i></p>
-          </div>
-      </div>
-      <hr>
-      `;
-  }
+        // Add to DOM
+        let onOrder = document.getElementById('onOrder');
+        onOrder.innerHTML += `
+        <div class='d-flex justify-content-between align-items-center'>
+            <div class="left">
+                <h6><b>${selectedProduct.productDescription}</b></h6>
+                <div class="ordered-description d-flex justify-content-between align-items-center gap-3">
+                    <h6 class="m-0 p-0 ordered-number"><span>${selectedProduct.productQuantity}</span>X</h6>
+                    <p class="m-0 p-0">@<del>$${(selectedProduct.productPrice * 1.5).toFixed(2)}</del></p>
+                    <p class="m-0 p-0"><b>$${selectedProduct.totalPrice}</b></p>
+                </div>
+            </div>
+            <div class="cancel">
+                <p class="fs-4 p-0 m-0 cancel-icon" onclick="removeFromCart('${selectedProduct.productName}')">
+                    <i class="fa-regular fa-circle-xmark"></i>
+                </p>
+            </div>
+        </div>
+        <hr>
+        `;
+    }
 
-  document.getElementById('item-num').innerHTML = cartProduct.length;
-  console.log(cartProduct.length);
-  
-
-  // Save updated cart to localStorage
-  localStorage.setItem('cart items', JSON.stringify(cartProduct));
-
-  // Recalculate total price
-  totalProduct(cartProduct);
+    document.getElementById('item-num').innerHTML = cartProduct.length;
+    totalProduct(cartProduct);
+    saveCartToLocalStorage();
 };
-
  
 
-// let arrayOfPrice = []
 const totalProduct = (arrayOfPrice) => {
   let totalPrice = 0;
   arrayOfPrice.forEach(product => {
@@ -238,52 +240,60 @@ const totalProduct = (arrayOfPrice) => {
 };
 
 
-let retrieve = () =>{
-   let retrieve = JSON.parse(localStorage.getItem('cart items'))
-   if (retrieve) {
-      console.log(("item found in storage"),retrieve);
-      document.getElementById('item-num').innerHTML = retrieve.length;
+const retrieveProducts = JSON.parse(localStorage.getItem('cart items')) || [];
+const retrieve = () => {
+    const storedProducts = JSON.parse(localStorage.getItem('cart items')) || [];
 
-      let total = document.getElementById('Total');
-      let totalPrice = 0;
-      
-      document.getElementById("all").style.display="block";
-      document.getElementById("preall").style.display="none";
+    if (storedProducts.length > 0) {
+        storedProducts.forEach(product => {
+            const existingProduct = cartProduct.find(item => item.productName === product.productName);
 
-      retrieve.forEach(element => {
-         onOrder.innerHTML += `
-         <div class='d-flex justify-content-between align-items-center'>
-               <div class="left">
-                  <h6><b>${element.productDescription}</b></h6>
-                  <div class="ordered-description d-flex justify-content-between align-items-center gap-3">
-                    <h6 class="m-0 p-0 ordered-number">${element.productQuantity}X</h6>
-                    <p class="m-0 p-0">@<del>$${(element.productPrice * 1.5)}</del></p>
-                    <p class="m-0 p-0"><b>$${(element.productPrice * element.productQuantity).toFixed(2)}</b></p>
-                  </div>
+            if (existingProduct) {
+                existingProduct.productQuantity += product.productQuantity;
+                existingProduct.totalPrice = (existingProduct.productQuantity * existingProduct.productPrice).toFixed(2);
+            } else {
+                cartProduct.push(product);
+            }
+        });
+
+        updateCartUI();
+    }
+};
+
+const updateCartUI = () => {
+    const onOrder = document.getElementById('onOrder');
+    onOrder.innerHTML = ""; // Clear existing UI
+    cartProduct.forEach(product => {
+        onOrder.innerHTML += `
+        <div class='d-flex justify-content-between align-items-center'>
+            <div class="left">
+                <h6><b>${product.productDescription}</b></h6>
+                <div class="ordered-description d-flex justify-content-between align-items-center gap-3">
+                    <h6 class="m-0 p-0 ordered-number"><span>${product.productQuantity}</span>X</h6>
+                    <p class="m-0 p-0">@<del>$${(product.productPrice * 1.5).toFixed(2)}</del></p>
+                    <p class="m-0 p-0"><b>$${product.totalPrice}</b></p>
                 </div>
-                <div class="cancel">
-                  <p class="fs-4 p-0 m-0 cancel-icon"><i class="fa-regular fa-circle-xmark"></i></p>
-                </div>
-                </div>
-                <hr>
-          `
-          totalPrice += element.productPrice
-          total.innerHTML = `
-              <div class="left">
-                  <p class="p-0 m-0">Total</p>
-              </div>
-              <div class="cancel">
-                  <h3>$${totalPrice.toFixed(2)}</h3>
-              </div>
-          `;
-          console.log(element.productPrice);
-          
-      });
-   } else {
-      console.log("empty");
-      
-   }
-}
+            </div>
+            <div class="cancel">
+                <p class="fs-4 p-0 m-0 cancel-icon" onclick="removeFromCart('${product.productName}')">
+                    <i class="fa-regular fa-circle-xmark"></i>
+                </p>
+            </div>
+        </div>
+        <hr>
+        `;
+    });
 
+    document.getElementById('item-num').innerHTML = cartProduct.length;
+    totalProduct(cartProduct);
+};
 
+const removeFromCart = (productName) => {
+    const index = cartProduct.findIndex(item => item.productName === productName);
+    if (index !== -1) {
+        cartProduct.splice(index, 1);
+        updateCartUI();
+        saveCartToLocalStorage();
+    }
+};
 

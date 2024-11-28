@@ -63,16 +63,17 @@ button{
 }
 .cancel-icon{
     color: hsl(14, 54%, 55%);
+    cursor: pointer;
 }
 .down{
     background-color: #FCF8F5;
 }
 .confirm-order-btn{
-    background-color: hsl(14, 86%, 42%);
+    background-color: hsl(14, 86%, 42%) !important;
     border: none !important;
 }
 .confirm-order-btn:hover{
-    background-color: hsl(14, 100%, 50%);
+    background-color: hsl(14, 99%, 50%) !important;
 }
 #all{
     display: none;
