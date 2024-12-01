@@ -76,6 +76,35 @@ button{
 #preall{
     display: block;
 }
+
+.modal-bg{
+    background-color: #E8E9E4;
+    padding: 10px 10px 0px 10px;
+}
+.modal-header {
+    border: none;
+  }
+  .modal-body {
+    text-align: center;
+  }
+  .modal-body img {
+    max-width: 80px;
+    margin-bottom: 20px;
+  }
+  .modal-footer {
+    justify-content: center;
+  }
+  .btn-new-order {
+    background-color: #ed140d;
+    border: none;
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+  .btn-new-order:hover {
+    background-color: #ff0800;
+  }
+
 @media (max-width:991px) {
     .dtc-btn{
         left: 70px;

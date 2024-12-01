@@ -297,3 +297,10 @@ const removeFromCart = (productName) => {
     }
 };
 
+// document.querySelector(".confirm-order-btn").addEventListener("click", orderedProductPopup);
+// const orderedProductPopup = () =>{
+//     // let confirmOrderBtn = document.querySelector('.confirm-order-btn');
+//     console.log('Product Ordered!!!!');
+    
+    
+// }
