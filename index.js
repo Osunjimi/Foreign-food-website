@@ -297,10 +297,59 @@ const removeFromCart = (productName) => {
     }
 };
 
-// document.querySelector(".confirm-order-btn").addEventListener("click", orderedProductPopup);
-// const orderedProductPopup = () =>{
-//     // let confirmOrderBtn = document.querySelector('.confirm-order-btn');
-//     console.log('Product Ordered!!!!');
+let modalAspect = document.getElementById('modal-aspect');
+
+const modal = () => {
+    console.log('Product Ordered!!!!');
     
-    
-// }
+    let modalContent = `
+    <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderModalLabel">
+                        <span class="text-success fs-2"><strong>&#10003;</strong></span> Order Confirmed
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <p>We hope you enjoy your food!</p>
+    `;
+
+    let orderTotal = 0;
+
+    cartProduct.forEach(product => {
+        modalContent += `
+        <div class="d-flex align-items-center justify-content-between modal-bg rounded mb-2">
+            <img src="${product.productImage}" alt="${product.productName}" class="rounded" width="60">
+            <div>
+                <p class="mb-1">${product.productDescription}</p>
+                <small>Quantity: ${product.productQuantity}</small>
+            </div>
+            <p class="fw-bold">$${product.totalPrice}</p>
+        </div>
+        `;
+        orderTotal += parseFloat(product.totalPrice);
+    });
+
+    modalContent += `
+                    <hr>
+                    <p class="fw-bold">Order Total: $${orderTotal.toFixed(2)}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-new-order" data-bs-dismiss="modal" id="startNewOrder">Start New Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
+
+    modalAspect.innerHTML = modalContent;
+
+    document.getElementById('startNewOrder').addEventListener('click', () => {
+        localStorage.removeItem('cart items'); // Remove cart items from local storage
+        cartProduct.length = 0; // Clear the in-memory cart
+        updateCartUI(); // Update the UI to reflect an empty cart
+    });
+};
+
+
